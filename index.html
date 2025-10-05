@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Karwa Chauth - My Moon and Stars</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -10,31 +10,31 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
         }
 
         body {
             font-family: 'Lato', sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
             position: relative;
-            padding: 10px;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px 5px;
-            }
+            padding: 0;
+            margin: 0;
         }
 
         body::before {
             content: '';
-            position: absolute;
-            width: 500px;
-            height: 500px;
+            position: fixed;
+            width: min(500px, 80vw);
+            height: min(500px, 80vw);
             background: radial-gradient(circle, rgba(255, 183, 77, 0.15) 0%, transparent 70%);
             border-radius: 50%;
             top: 50%;
@@ -42,6 +42,7 @@
             transform: translate(-50%, -50%);
             pointer-events: none;
             animation: glow 4s ease-in-out infinite;
+            z-index: 0;
         }
 
         @keyframes glow {
@@ -74,11 +75,11 @@
 
         .permission-dialog {
             background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
-            border: 6px solid #ffd700;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
-            width: 100%;
+            border: 4px solid #ffd700;
+            border-radius: 15px;
+            padding: 25px 20px;
+            max-width: 450px;
+            width: calc(100% - 40px);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             text-align: center;
             animation: slideUp 0.6s ease;
@@ -90,33 +91,27 @@
         }
 
         .permission-btn {
-            padding: 12px 30px;
-            font-size: 1rem;
+            padding: 12px 28px;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #8b0000;
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
         }
 
-        .permission-btn:hover {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
-        }
-
-        .permission-btn:focus {
-            outline: 3px solid #fff;
-            outline-offset: 3px;
+        .permission-btn:active {
+            transform: scale(0.95);
         }
 
         .moon-icon {
-            font-size: 60px;
-            margin: 20px 0;
+            font-size: 50px;
+            margin: 15px 0;
             animation: float 3s ease-in-out infinite;
         }
 
@@ -125,113 +120,85 @@
             50% { transform: translateY(-10px); }
         }
 
-        .card-container {
-            position: relative;
+        .main-container {
             width: 100%;
-            max-width: 450px;
-            height: 550px;
-            transform-style: preserve-3d;
-            perspective: 2500px;
-            transition: transform 1s;
-            margin: 0 auto;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         @media (max-width: 768px) {
-            .card-container {
-                max-width: 95%;
-                height: auto;
-                min-height: 500px;
-                aspect-ratio: 0.75;
+            .main-container {
+                padding: 15px;
             }
         }
 
         @media (max-width: 480px) {
-            .card-container {
+            .main-container {
+                padding: 10px;
+            }
+        }
+
+        .card-wrapper {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .card-wrapper {
+                max-width: 380px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-wrapper {
                 max-width: 100%;
-                min-height: 450px;
             }
         }
 
-        @media (max-width: 360px) {
-            .card-container {
-                min-height: 400px;
-            }
+        .card-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 133.33%;
+            perspective: 2000px;
         }
-
-
 
         .card {
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
+            transition: transform 1s ease;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
             background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
-            box-shadow: inset 300px 0 50px rgba(0, 0, 0, 0.5), 0 20px 100px rgba(0, 0, 0, 0.5);
-            transition: box-shadow 1s;
-            border-radius: 10px;
-            border: 8px solid #ffd700;
+            border: 6px solid #ffd700;
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
         }
 
         @media (max-width: 480px) {
-            .card {
-                border-width: 6px;
-                border-radius: 8px;
+            .card-face {
+                border-width: 4px;
+                border-radius: 10px;
             }
         }
 
-
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, #ffd700 0%, #ffed4e 100%);
-            transform-origin: bottom left;
-            transform: perspective(500px) rotateX(45deg);
-            border-radius: 10px 10px 0 0;
-        }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: -5px;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%);
-            transform-origin: top right;
-            transform: perspective(500px) rotateY(-45deg);
-            border-radius: 0 10px 10px 0;
-        }
-
-        .imgBox {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-origin: left;
-            transition: transform 1s;
-            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px 20px;
-        }
-
-        @media (max-width: 480px) {
-            .imgBox {
-                padding: 20px 15px;
-                border-radius: 8px;
-            }
-        }
-
-        .imgBox::before {
+        .card-face::before {
             content: '';
             position: absolute;
             inset: 0;
@@ -241,13 +208,43 @@
             pointer-events: none;
         }
 
-        .card.opened .imgBox {
-            transform: rotateY(-180deg);
+        .card-front {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        @media (max-width: 480px) {
+            .card-front {
+                padding: 20px 15px;
+            }
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 20px 20px;
+            background: linear-gradient(135deg, #8b0000 0%, #5a0000 100%);
+        }
+
+        @media (max-width: 480px) {
+            .card-back {
+                padding: 20px 15px 15px;
+            }
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
         }
 
         .headline {
             font-family: 'Cinzel', serif;
-            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-size: clamp(1.5rem, 6vw, 2.5rem);
             font-weight: 700;
             color: #ffd700;
             text-align: center;
@@ -255,7 +252,7 @@
                 2px 2px 4px rgba(0, 0, 0, 0.8),
                 0 0 20px rgba(255, 215, 0, 0.5);
             line-height: 1.2;
-            margin-bottom: 20px;
+            margin: 15px 0;
             animation: shimmer 3s ease-in-out infinite;
         }
 
@@ -265,7 +262,7 @@
         }
 
         .subtitle {
-            font-size: clamp(0.8rem, 2vw, 1.2rem);
+            font-size: clamp(0.85rem, 2.5vw, 1.1rem);
             color: #ffe4b5;
             text-align: center;
             margin-top: 10px;
@@ -275,81 +272,27 @@
         .open-btn {
             margin-top: 20px;
             padding: 12px 30px;
-            font-size: 1rem;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
             font-weight: 700;
             color: #8b0000;
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             white-space: nowrap;
         }
 
-        @media (max-width: 480px) {
-            .open-btn {
-                padding: 10px 24px;
-                font-size: 0.9rem;
-                letter-spacing: 0.5px;
-            }
-        }
-
-        @media (hover: hover) {
-            .open-btn:hover {
-                transform: scale(1.05) translateY(-2px);
-                box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
-            }
-        }
-
         .open-btn:active {
-            transform: scale(0.98);
-        }
-
-        .open-btn:focus {
-            outline: 3px solid #fff;
-            outline-offset: 3px;
-        }
-
-        .details {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 30px 20px;
-            z-index: -1;
-            background: linear-gradient(135deg, #8b0000 0%, #5a0000 100%);
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-        @media (max-width: 480px) {
-            .details {
-                padding: 20px 15px;
-                border-radius: 8px;
-            }
-        }
-
-        .details::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: 
-                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.05) 20px);
-            pointer-events: none;
+            transform: scale(0.95);
         }
 
         .greeting-text {
             font-family: 'Cinzel', serif;
-            font-size: clamp(1rem, 3vw, 1.8rem);
+            font-size: clamp(1.1rem, 3.5vw, 1.6rem);
             color: #ffd700;
             text-align: center;
             line-height: 1.6;
@@ -358,10 +301,11 @@
         }
 
         .heart-icon {
-            font-size: 40px;
+            font-size: clamp(30px, 8vw, 40px);
             color: #ff69b4;
             animation: heartbeat 1.5s ease-in-out infinite;
-            margin-top: 10px;
+            margin-top: 8px;
+            display: inline-block;
         }
 
         @keyframes heartbeat {
@@ -373,33 +317,33 @@
         .mirror-window {
             width: 100%;
             max-width: 280px;
-            height: 220px;
+            height: 200px;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            border: 6px solid #ffd700;
-            border-radius: 15px;
+            border: 4px solid #ffd700;
+            border-radius: 12px;
             box-shadow: 
-                inset 0 4px 20px rgba(0, 0, 0, 0.5),
-                0 10px 30px rgba(0, 0, 0, 0.4);
+                inset 0 4px 15px rgba(0, 0, 0, 0.5),
+                0 8px 20px rgba(0, 0, 0, 0.4);
             overflow: hidden;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 15px;
+            margin: 15px 0;
             flex-shrink: 0;
         }
 
         @media (max-width: 480px) {
             .mirror-window {
-                max-width: 90%;
-                height: 180px;
-                border-width: 4px;
+                max-width: 100%;
+                height: 160px;
+                border-width: 3px;
             }
         }
 
-        @media (max-width: 360px) {
+        @media (max-height: 700px) {
             .mirror-window {
-                height: 160px;
+                height: 140px;
             }
         }
 
@@ -418,7 +362,7 @@
         .mirror-placeholder {
             text-align: center;
             color: #ffd700;
-            padding: 20px;
+            padding: 15px;
         }
 
         .mirror-placeholder.hidden {
@@ -427,40 +371,27 @@
 
         .camera-btn {
             padding: 10px 24px;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
             font-weight: 700;
             color: #fff;
             background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
             border: none;
             border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(39, 174, 96, 0.4);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-top: 15px;
-        }
-
-        @media (hover: hover) {
-            .camera-btn:hover {
-                transform: scale(1.05);
-                box-shadow: 0 8px 20px rgba(39, 174, 96, 0.6);
-            }
+            white-space: nowrap;
         }
 
         .camera-btn:active {
-            transform: scale(0.98);
+            transform: scale(0.95);
         }
 
         .camera-btn.close {
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
-        }
-
-        @media (hover: hover) {
-            .camera-btn.close:hover {
-                box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
-            }
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
         }
 
         .fallback-upload {
@@ -468,7 +399,7 @@
             flex-direction: column;
             align-items: center;
             gap: 10px;
-            padding: 20px;
+            padding: 15px;
         }
 
         .fallback-upload.visible {
@@ -477,7 +408,7 @@
 
         .upload-btn {
             padding: 10px 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #fff;
             background: #3498db;
             border: none;
@@ -486,8 +417,8 @@
             transition: all 0.3s ease;
         }
 
-        .upload-btn:hover {
-            background: #2980b9;
+        .upload-btn:active {
+            transform: scale(0.95);
         }
 
         input[type="file"] {
@@ -496,10 +427,11 @@
 
         .error-message {
             color: #ffe4b5;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-align: center;
             padding: 10px;
             display: none;
+            line-height: 1.4;
         }
 
         .error-message.visible {
@@ -511,6 +443,7 @@
             gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
+            margin-top: 10px;
         }
 
         .https-warning {
@@ -518,16 +451,16 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 69, 0, 0.9);
+            background: rgba(255, 69, 0, 0.95);
             color: white;
-            padding: 12px 24px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
             z-index: 1000;
             display: none;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            max-width: 90%;
-            font-size: 0.9rem;
+            max-width: calc(100% - 40px);
+            font-size: 0.85rem;
         }
 
         .https-warning.visible {
@@ -536,16 +469,15 @@
 
         .decorative-border {
             position: absolute;
-            inset: 15px;
-            border: 3px solid rgba(255, 215, 0, 0.3);
-            border-radius: 5px;
+            inset: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 6px;
             pointer-events: none;
         }
 
-        @media (max-width: 400px) {
+        @media (max-width: 480px) {
             .decorative-border {
-                inset: 10px;
-                border-width: 2px;
+                inset: 8px;
             }
         }
 
@@ -559,6 +491,31 @@
         #imageCanvas.active {
             display: block;
         }
+
+        .dialog-title {
+            font-family: 'Cinzel', serif;
+            color: #ffd700;
+            margin: 15px 0;
+            text-align: center;
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            line-height: 1.3;
+        }
+
+        .dialog-text {
+            color: #ffe4b5;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        }
+
+        .dialog-footer {
+            color: rgba(255, 228, 181, 0.7);
+            font-size: 0.75rem;
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.3;
+        }
     </style>
 </head>
 <body>
@@ -568,61 +525,65 @@
 
     <div class="permission-overlay" id="permissionOverlay">
         <div class="permission-dialog">
-            <div class="moon-icon" style="font-size: 60px;">🌙</div>
-            <h2 style="font-family: 'Cinzel', serif; color: #ffd700; margin: 20px 0; text-align: center; font-size: clamp(1.2rem, 4vw, 1.8rem);">Welcome to<br>Karwa Chauth</h2>
-            <p style="color: #ffe4b5; text-align: center; margin-bottom: 25px; line-height: 1.6; font-size: clamp(0.85rem, 2vw, 1rem);">
+            <div class="moon-icon">🌙</div>
+            <h2 class="dialog-title">Welcome to<br>Karwa Chauth</h2>
+            <p class="dialog-text">
                 This card has a special mirror for you.<br>
                 Please allow camera access to see your reflection.
             </p>
             <button class="permission-btn" id="permissionBtn">
                 Allow Camera & Continue
             </button>
-            <p style="color: rgba(255, 228, 181, 0.7); font-size: 0.75rem; margin-top: 20px; text-align: center;">
+            <p class="dialog-footer">
                 Your privacy is protected - camera is only used for the mirror effect
             </p>
         </div>
     </div>
 
-    <div class="card-container">
-        <div class="card" id="card">
-            <div class="imgBox">
-                <div class="decorative-border"></div>
-                <div class="moon-icon">🌙</div>
-                <h1 class="headline">KARWA CHAUTH<br>KA ASLI CHAAND</h1>
-                <p class="subtitle">The Real Moon of Karwa Chauth</p>
-                <button class="open-btn" id="openBtn" aria-label="Open greeting card">
-                    Tap to Open
-                </button>
-            </div>
-            <div class="details">
-                <div class="decorative-border"></div>
-                <div class="greeting-text">
-                    Happy Karwa Chauth,<br>
-                    my moon and my stars.
-                    <div class="heart-icon">💖</div>
-                </div>
-                
-                <div class="mirror-window">
-                    <video id="videoElement" autoplay playsinline muted></video>
-                    <div class="mirror-placeholder" id="placeholder">
-                        <p style="font-size: 2rem; margin-bottom: 10px;">✨</p>
-                        <p style="font-size: clamp(0.85rem, 2vw, 1rem);">Your reflection awaits</p>
+    <div class="main-container">
+        <div class="card-wrapper">
+            <div class="card-container">
+                <div class="card" id="card">
+                    <div class="card-face card-front">
+                        <div class="decorative-border"></div>
+                        <div class="moon-icon">🌙</div>
+                        <h1 class="headline">KARWA CHAUTH<br>KA ASLI CHAAND</h1>
+                        <p class="subtitle">The Real Moon of Karwa Chauth</p>
+                        <button class="open-btn" id="openBtn" aria-label="Open greeting card">
+                            Tap to Open
+                        </button>
                     </div>
-                    <div class="fallback-upload" id="fallbackUpload">
-                        <p style="font-size: 0.9rem;">📸 Camera unavailable</p>
-                        <label class="upload-btn">
-                            Choose Photo
-                            <input type="file" id="fileInput" accept="image/*">
-                        </label>
-                    </div>
-                    <canvas id="imageCanvas"></canvas>
-                    <div class="error-message" id="errorMessage"></div>
-                </div>
+                    <div class="card-face card-back">
+                        <div class="decorative-border"></div>
+                        <div class="greeting-text">
+                            Happy Karwa Chauth,<br>
+                            my moon and my stars.
+                            <div class="heart-icon">💖</div>
+                        </div>
+                        
+                        <div class="mirror-window">
+                            <video id="videoElement" autoplay playsinline muted></video>
+                            <div class="mirror-placeholder" id="placeholder">
+                                <p style="font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: 8px;">✨</p>
+                                <p style="font-size: clamp(0.85rem, 2.5vw, 1rem);">Your reflection awaits</p>
+                            </div>
+                            <div class="fallback-upload" id="fallbackUpload">
+                                <p style="font-size: 0.85rem;">📸 Camera unavailable</p>
+                                <label class="upload-btn">
+                                    Choose Photo
+                                    <input type="file" id="fileInput" accept="image/*">
+                                </label>
+                            </div>
+                            <canvas id="imageCanvas"></canvas>
+                            <div class="error-message" id="errorMessage"></div>
+                        </div>
 
-                <div class="controls">
-                    <button class="camera-btn" id="cameraBtn" aria-label="Close camera" aria-pressed="true" style="display:none;">
-                        Close Camera
-                    </button>
+                        <div class="controls">
+                            <button class="camera-btn" id="cameraBtn" aria-label="Close camera" aria-pressed="true" style="display:none;">
+                                Close Camera
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -652,9 +613,6 @@
             httpsWarning.classList.add('visible');
         }
 
-        // Detect mobile
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-
         // Request camera permission
         permissionBtn.addEventListener('click', async () => {
             await requestCameraPermission();
@@ -679,13 +637,11 @@
                 cameraReady = true;
                 isCameraActive = true;
                 
-                // Hide permission overlay
                 permissionOverlay.style.opacity = '0';
                 setTimeout(() => {
                     permissionOverlay.classList.add('hidden');
                 }, 500);
 
-                // Prepare video for when card opens
                 videoElement.classList.add('active');
                 placeholder.classList.add('hidden');
                 cameraBtn.style.display = 'inline-block';
@@ -694,7 +650,6 @@
                 console.error('Camera permission error:', error);
                 handleCameraError(error);
                 
-                // Still allow user to continue without camera
                 setTimeout(() => {
                     permissionOverlay.style.opacity = '0';
                     setTimeout(() => {
@@ -704,19 +659,19 @@
             }
         }
 
-        // Handle card opening with button (for all devices)
+        // Handle card opening
         openBtn.addEventListener('click', () => {
             isCardOpen = !isCardOpen;
             if (isCardOpen) {
-                card.classList.add('opened');
+                card.classList.add('flipped');
                 openBtn.textContent = 'Close Card';
             } else {
-                card.classList.remove('opened');
+                card.classList.remove('flipped');
                 openBtn.textContent = 'Tap to Open';
             }
         });
 
-        // Camera toggle functionality
+        // Camera toggle
         cameraBtn.addEventListener('click', toggleCamera);
 
         async function toggleCamera() {
@@ -810,7 +765,6 @@
                         imageCanvas.width = img.width;
                         imageCanvas.height = img.height;
                         
-                        // Mirror the image
                         ctx.translate(imageCanvas.width, 0);
                         ctx.scale(-1, 1);
                         ctx.drawImage(img, 0, 0);
@@ -826,7 +780,7 @@
             }
         });
 
-        // Clean up on page hide
+        // Clean up
         document.addEventListener('visibilitychange', () => {
             if (document.hidden && isCameraActive) {
                 closeCamera();
@@ -839,13 +793,15 @@
             }
         });
 
-        // Keyboard accessibility
-        cameraBtn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
                 e.preventDefault();
-                toggleCamera();
             }
-        });
+            lastTouchEnd = now;
+        }, false);
     </script>
 </body>
 </html>
