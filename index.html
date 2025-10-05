@@ -97,6 +97,7 @@
             align-items: center;
             justify-content: center;
             padding: 40px;
+            z-index: 2;
         }
 
         .flap-right {
@@ -108,6 +109,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 40px;
+            z-index: 1;
         }
 
         .decorative-border {
@@ -360,11 +362,91 @@
         .https-warning.visible {
             display: block;
         }
+
+        .permission-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .permission-overlay.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .permission-dialog {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            border: 6px solid #ffd700;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .permission-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #8b0000;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .permission-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .permission-btn:focus {
+            outline: 3px solid #fff;
+            outline-offset: 3px;
+        }
     </style>
 </head>
 <body>
     <div class="https-warning" id="httpsWarning">
         ⚠️ Camera requires HTTPS. Please use a secure connection.
+    </div>
+
+    <div class="permission-overlay" id="permissionOverlay">
+        <div class="permission-dialog">
+            <div class="moon-icon" style="font-size: 80px;">🌙</div>
+            <h2 style="font-family: 'Cinzel', serif; color: #ffd700; margin: 20px 0; text-align: center;">Welcome to<br>Karwa Chauth</h2>
+            <p style="color: #ffe4b5; text-align: center; margin-bottom: 30px; line-height: 1.6;">
+                This card has a special mirror for you.<br>
+                Please allow camera access to see your reflection.
+            </p>
+            <button class="permission-btn" id="permissionBtn">
+                Allow Camera & Continue
+            </button>
+            <p style="color: rgba(255, 228, 181, 0.7); font-size: 0.85rem; margin-top: 20px; text-align: center;">
+                Your privacy is protected - camera is only used for the mirror effect
+            </p>
+        </div>
     </div>
 
     <div class="container">
@@ -405,8 +487,8 @@
                     </div>
 
                     <div class="controls">
-                        <button class="camera-btn" id="cameraBtn" aria-label="Open camera" aria-pressed="false">
-                            Open Camera
+                        <button class="camera-btn" id="cameraBtn" aria-label="Close camera" aria-pressed="true" style="display:none;">
+                            Close Camera
                         </button>
                     </div>
                 </div>
@@ -427,14 +509,71 @@
         const imageCanvas = document.getElementById('imageCanvas');
         const errorMessage = document.getElementById('errorMessage');
         const httpsWarning = document.getElementById('httpsWarning');
+        const permissionOverlay = document.getElementById('permissionOverlay');
+        const permissionBtn = document.getElementById('permissionBtn');
 
         let stream = null;
         let isCardOpen = false;
         let isCameraActive = false;
+        let cameraReady = false;
 
         // Check HTTPS
         if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
             httpsWarning.classList.add('visible');
+        }
+
+        // Request camera permission on page load
+        permissionBtn.addEventListener('click', async () => {
+            await requestCameraPermission();
+        });
+
+        async function requestCameraPermission() {
+            try {
+                const constraints = {
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                };
+
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoElement.srcObject = stream;
+                videoElement.playsInline = true;
+                
+                await videoElement.play();
+                
+                cameraReady = true;
+                isCameraActive = true;
+                
+                // Hide permission overlay and show card
+                gsap.to(permissionOverlay, {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => {
+                        permissionOverlay.classList.add('hidden');
+                    }
+                });
+
+                // Prepare video for when card opens
+                videoElement.classList.add('active');
+                placeholder.classList.add('hidden');
+
+            } catch (error) {
+                console.error('Camera permission error:', error);
+                handleCameraError(error);
+                
+                // Still allow user to continue without camera
+                setTimeout(() => {
+                    gsap.to(permissionOverlay, {
+                        opacity: 0,
+                        duration: 0.5,
+                        onComplete: () => {
+                            permissionOverlay.classList.add('hidden');
+                        }
+                    });
+                }, 2000);
+            }
         }
 
         // Open card animation
@@ -451,17 +590,21 @@
             isCardOpen = true;
             cardWrapper.classList.remove('closed');
 
-            gsap.to(flapLeft, {
-                rotationY: -165,
-                duration: 1.5,
-                ease: "back.out(1.2)",
-                transformOrigin: "left center"
-            });
+            // Show close camera button if camera is active
+            if (cameraReady) {
+                cameraBtn.style.display = 'inline-block';
+            }
 
             gsap.to(flapLeft, {
-                boxShadow: "-30px 0 60px rgba(0, 0, 0, 0.7)",
-                duration: 1.5,
-                ease: "power2.out"
+                rotationY: -150,
+                duration: 1.8,
+                ease: "power2.inOut",
+                transformOrigin: "left center",
+                onUpdate: function() {
+                    const progress = this.progress();
+                    const shadowIntensity = Math.sin(progress * Math.PI) * 30;
+                    flapLeft.style.boxShadow = `-${shadowIntensity}px 0 ${shadowIntensity * 2}px rgba(0, 0, 0, ${0.3 + progress * 0.4})`;
+                }
             });
 
             gsap.to(openBtn, {
@@ -472,7 +615,7 @@
             });
         }
 
-        // Camera functionality
+        // Camera toggle functionality
         cameraBtn.addEventListener('click', toggleCamera);
 
         async function toggleCamera() {
@@ -511,6 +654,7 @@
                 cameraBtn.classList.add('close');
                 cameraBtn.setAttribute('aria-pressed', 'true');
                 isCameraActive = true;
+                cameraReady = true;
 
             } catch (error) {
                 console.error('Camera error:', error);
