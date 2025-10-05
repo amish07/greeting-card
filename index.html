@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karwa Chauth - My Moon and Stars</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 183, 77, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: glow 4s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .container {
+            perspective: 2000px;
+            width: 90%;
+            max-width: 900px;
+            height: 600px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                height: 500px;
+                max-width: 95%;
+            }
+        }
+
+        .card-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .flap {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            overflow: hidden;
+        }
+
+        .flap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px),
+                repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+            pointer-events: none;
+        }
+
+        .flap-left {
+            left: 0;
+            transform-origin: left center;
+            border: 8px solid #ffd700;
+            border-right: 4px solid #ffd700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .flap-right {
+            right: 0;
+            border: 8px solid #ffd700;
+            border-left: 4px solid #ffd700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px;
+        }
+
+        .decorative-border {
+            position: absolute;
+            inset: 20px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-radius: 5px;
+            pointer-events: none;
+        }
+
+        .headline {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: #ffd700;
+            text-align: center;
+            text-shadow: 
+                2px 2px 4px rgba(0, 0, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.5);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.8); }
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: #ffe4b5;
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .moon-icon {
+            font-size: 60px;
+            margin: 20px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .open-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #8b0000;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .open-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .open-btn:focus {
+            outline: 3px solid #fff;
+            outline-offset: 3px;
+        }
+
+        .mirror-window {
+            width: 100%;
+            max-width: 350px;
+            height: 300px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border: 6px solid #ffd700;
+            border-radius: 15px;
+            box-shadow: 
+                inset 0 4px 20px rgba(0, 0, 0, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .mirror-window {
+                max-width: 280px;
+                height: 250px;
+            }
+        }
+
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            display: none;
+        }
+
+        #videoElement.active {
+            display: block;
+        }
+
+        .mirror-placeholder {
+            text-align: center;
+            color: #ffd700;
+            padding: 20px;
+        }
+
+        .mirror-placeholder.hidden {
+            display: none;
+        }
+
+        .camera-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(39, 174, 96, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .camera-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.6);
+        }
+
+        .camera-btn.close {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .camera-btn.close:hover {
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
+        }
+
+        .greeting-text {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: #ffd700;
+            text-align: center;
+            line-height: 1.6;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .heart-icon {
+            font-size: 40px;
+            color: #ff69b4;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            margin-top: 10px;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
+        .fallback-upload {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .fallback-upload.visible {
+            display: flex;
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            color: #fff;
+            background: #3498db;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: #2980b9;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .error-message {
+            color: #ffe4b5;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .inner-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .closed .flap-right {
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .https-warning {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 69, 0, 0.9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .https-warning.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="https-warning" id="httpsWarning">
+        ⚠️ Camera requires HTTPS. Please use a secure connection.
+    </div>
+
+    <div class="container">
+        <div class="card-wrapper closed">
+            <div class="flap flap-left">
+                <div class="decorative-border"></div>
+                <div class="moon-icon">🌙</div>
+                <h1 class="headline">KARWA CHAUTH<br>KA ASLI CHAAND</h1>
+                <p class="subtitle">The Real Moon of Karwa Chauth</p>
+                <button class="open-btn" id="openBtn" aria-label="Open greeting card">
+                    Open Card
+                </button>
+            </div>
+            <div class="flap flap-right">
+                <div class="decorative-border"></div>
+                <div class="inner-content">
+                    <div class="greeting-text">
+                        Happy Karwa Chauth,<br>
+                        my moon and my stars.
+                        <div class="heart-icon">💖</div>
+                    </div>
+                    
+                    <div class="mirror-window">
+                        <video id="videoElement" autoplay playsinline muted></video>
+                        <div class="mirror-placeholder" id="placeholder">
+                            <p style="font-size: 2rem; margin-bottom: 10px;">✨</p>
+                            <p>Your reflection awaits</p>
+                        </div>
+                        <div class="fallback-upload" id="fallbackUpload">
+                            <p>📸 Camera unavailable</p>
+                            <label class="upload-btn">
+                                Choose Photo
+                                <input type="file" id="fileInput" accept="image/*">
+                            </label>
+                        </div>
+                        <canvas id="imageCanvas" style="display:none; width:100%; height:100%; object-fit:cover;"></canvas>
+                        <div class="error-message" id="errorMessage"></div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="camera-btn" id="cameraBtn" aria-label="Open camera" aria-pressed="false">
+                            Open Camera
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        const cardWrapper = document.querySelector('.card-wrapper');
+        const flapLeft = document.querySelector('.flap-left');
+        const openBtn = document.getElementById('openBtn');
+        const cameraBtn = document.getElementById('cameraBtn');
+        const videoElement = document.getElementById('videoElement');
+        const placeholder = document.getElementById('placeholder');
+        const fallbackUpload = document.getElementById('fallbackUpload');
+        const fileInput = document.getElementById('fileInput');
+        const imageCanvas = document.getElementById('imageCanvas');
+        const errorMessage = document.getElementById('errorMessage');
+        const httpsWarning = document.getElementById('httpsWarning');
+
+        let stream = null;
+        let isCardOpen = false;
+        let isCameraActive = false;
+
+        // Check HTTPS
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+            httpsWarning.classList.add('visible');
+        }
+
+        // Open card animation
+        openBtn.addEventListener('click', openCard);
+        openBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openCard();
+            }
+        });
+
+        function openCard() {
+            if (isCardOpen) return;
+            isCardOpen = true;
+            cardWrapper.classList.remove('closed');
+
+            gsap.to(flapLeft, {
+                rotationY: -165,
+                duration: 1.5,
+                ease: "back.out(1.2)",
+                transformOrigin: "left center"
+            });
+
+            gsap.to(flapLeft, {
+                boxShadow: "-30px 0 60px rgba(0, 0, 0, 0.7)",
+                duration: 1.5,
+                ease: "power2.out"
+            });
+
+            gsap.to(openBtn, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.5,
+                ease: "power2.in"
+            });
+        }
+
+        // Camera functionality
+        cameraBtn.addEventListener('click', toggleCamera);
+
+        async function toggleCamera() {
+            if (isCameraActive) {
+                closeCamera();
+            } else {
+                await openCamera();
+            }
+        }
+
+        async function openCamera() {
+            try {
+                errorMessage.textContent = '';
+                errorMessage.classList.remove('visible');
+
+                const constraints = {
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                };
+
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoElement.srcObject = stream;
+                videoElement.playsInline = true;
+                
+                await videoElement.play();
+                
+                videoElement.classList.add('active');
+                placeholder.classList.add('hidden');
+                fallbackUpload.classList.remove('visible');
+                imageCanvas.style.display = 'none';
+                
+                cameraBtn.textContent = 'Close Camera';
+                cameraBtn.classList.add('close');
+                cameraBtn.setAttribute('aria-pressed', 'true');
+                isCameraActive = true;
+
+            } catch (error) {
+                console.error('Camera error:', error);
+                handleCameraError(error);
+            }
+        }
+
+        function closeCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                videoElement.srcObject = null;
+                stream = null;
+            }
+
+            videoElement.classList.remove('active');
+            placeholder.classList.remove('hidden');
+            
+            cameraBtn.textContent = 'Open Camera';
+            cameraBtn.classList.remove('close');
+            cameraBtn.setAttribute('aria-pressed', 'false');
+            isCameraActive = false;
+        }
+
+        function handleCameraError(error) {
+            let message = 'Camera access failed. ';
+            
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                message += 'Please grant camera permission.';
+            } else if (error.name === 'NotFoundError') {
+                message += 'No camera found on this device.';
+            } else if (error.name === 'NotReadableError') {
+                message += 'Camera is in use by another app.';
+            } else {
+                message += error.message || 'Please try again.';
+            }
+
+            errorMessage.textContent = message;
+            errorMessage.classList.add('visible');
+            fallbackUpload.classList.add('visible');
+            placeholder.classList.add('hidden');
+        }
+
+        // File upload fallback
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const ctx = imageCanvas.getContext('2d');
+                        imageCanvas.width = img.width;
+                        imageCanvas.height = img.height;
+                        
+                        // Mirror the image
+                        ctx.translate(imageCanvas.width, 0);
+                        ctx.scale(-1, 1);
+                        ctx.drawImage(img, 0, 0);
+                        ctx.setTransform(1, 0, 0, 1, 0, 0);
+                        
+                        imageCanvas.style.display = 'block';
+                        fallbackUpload.classList.remove('visible');
+                        errorMessage.classList.remove('visible');
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Clean up on page hide
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isCameraActive) {
+                closeCamera();
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+
+        // Keyboard accessibility for camera button
+        cameraBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleCamera();
+            }
+        });
+    </script>
+</body>
+</html>
