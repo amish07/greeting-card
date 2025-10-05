@@ -21,7 +21,13 @@
             justify-content: center;
             overflow-x: hidden;
             position: relative;
-            padding: 20px;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 5px;
+            }
         }
 
         body::before {
@@ -127,19 +133,28 @@
             transform-style: preserve-3d;
             perspective: 2500px;
             transition: transform 1s;
+            margin: 0 auto;
         }
 
         @media (max-width: 768px) {
             .card-container {
-                max-width: 340px;
-                height: 480px;
+                max-width: 95%;
+                height: auto;
+                min-height: 500px;
+                aspect-ratio: 0.75;
             }
         }
 
-        @media (max-width: 400px) {
+        @media (max-width: 480px) {
             .card-container {
-                max-width: 300px;
-                height: 440px;
+                max-width: 100%;
+                min-height: 450px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .card-container {
+                min-height: 400px;
             }
         }
 
@@ -156,6 +171,13 @@
             border-radius: 10px;
             border: 8px solid #ffd700;
             overflow: hidden;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                border-width: 6px;
+                border-radius: 8px;
+            }
         }
 
 
@@ -202,6 +224,13 @@
             padding: 30px 20px;
         }
 
+        @media (max-width: 480px) {
+            .imgBox {
+                padding: 20px 15px;
+                border-radius: 8px;
+            }
+        }
+
         .imgBox::before {
             content: '';
             position: absolute;
@@ -213,7 +242,7 @@
         }
 
         .card.opened .imgBox {
-            transform: rotateY(-135deg);
+            transform: rotateY(-180deg);
         }
 
         .headline {
@@ -257,6 +286,15 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 480px) {
+            .open-btn {
+                padding: 10px 24px;
+                font-size: 0.9rem;
+                letter-spacing: 0.5px;
+            }
         }
 
         @media (hover: hover) {
@@ -291,6 +329,13 @@
             justify-content: space-between;
             overflow-y: auto;
             overflow-x: hidden;
+        }
+
+        @media (max-width: 480px) {
+            .details {
+                padding: 20px 15px;
+                border-radius: 8px;
+            }
         }
 
         .details::before {
@@ -341,12 +386,20 @@
             align-items: center;
             justify-content: center;
             margin-top: 15px;
+            flex-shrink: 0;
         }
 
-        @media (max-width: 400px) {
+        @media (max-width: 480px) {
             .mirror-window {
-                max-width: 240px;
+                max-width: 90%;
                 height: 180px;
+                border-width: 4px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .mirror-window {
+                height: 160px;
             }
         }
 
@@ -538,8 +591,7 @@
                 <h1 class="headline">KARWA CHAUTH<br>KA ASLI CHAAND</h1>
                 <p class="subtitle">The Real Moon of Karwa Chauth</p>
                 <button class="open-btn" id="openBtn" aria-label="Open greeting card">
-                    <span class="desktop-text">Hover to Open</span>
-                    <span class="mobile-text">Tap to Open</span>
+                    Tap to Open
                 </button>
             </div>
             <div class="details">
@@ -603,15 +655,6 @@
         // Detect mobile
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
-        // Show appropriate button text
-        if (isMobile) {
-            document.querySelector('.desktop-text').style.display = 'none';
-            document.querySelector('.mobile-text').style.display = 'inline';
-        } else {
-            document.querySelector('.desktop-text').style.display = 'inline';
-            document.querySelector('.mobile-text').style.display = 'none';
-        }
-
         // Request camera permission
         permissionBtn.addEventListener('click', async () => {
             await requestCameraPermission();
@@ -661,15 +704,15 @@
             }
         }
 
-        // Handle card opening on mobile (tap)
+        // Handle card opening with button (for all devices)
         openBtn.addEventListener('click', () => {
-            if (isMobile) {
-                isCardOpen = !isCardOpen;
-                if (isCardOpen) {
-                    card.classList.add('opened');
-                } else {
-                    card.classList.remove('opened');
-                }
+            isCardOpen = !isCardOpen;
+            if (isCardOpen) {
+                card.classList.add('opened');
+                openBtn.textContent = 'Close Card';
+            } else {
+                card.classList.remove('opened');
+                openBtn.textContent = 'Tap to Open';
             }
         });
 
