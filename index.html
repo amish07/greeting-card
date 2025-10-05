@@ -19,8 +19,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
+            padding: 20px;
         }
 
         body::before {
@@ -42,42 +43,171 @@
             50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
         }
 
-        .container {
-            perspective: 2000px;
-            width: 90%;
-            max-width: 900px;
-            height: 600px;
+        .permission-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.5s ease;
+            padding: 20px;
+            transition: opacity 0.5s ease;
+        }
+
+        .permission-overlay.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .permission-dialog {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            border: 6px solid #ffd700;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .permission-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #8b0000;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .permission-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .permission-btn:focus {
+            outline: 3px solid #fff;
+            outline-offset: 3px;
+        }
+
+        .moon-icon {
+            font-size: 60px;
+            margin: 20px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .card-container {
             position: relative;
-            z-index: 1;
+            width: 100%;
+            max-width: 450px;
+            height: 550px;
+            transform-style: preserve-3d;
+            perspective: 2500px;
+            transition: transform 1s;
         }
 
         @media (max-width: 768px) {
-            .container {
-                height: 500px;
-                max-width: 95%;
+            .card-container {
+                max-width: 340px;
+                height: 480px;
             }
         }
 
-        .card-wrapper {
+        @media (max-width: 400px) {
+            .card-container {
+                max-width: 300px;
+                height: 440px;
+            }
+        }
+
+        @media (hover: hover) {
+            .card-container:hover {
+                transform: rotate(-5deg);
+            }
+        }
+
+        .card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            box-shadow: inset 300px 0 50px rgba(0, 0, 0, 0.5), 0 20px 100px rgba(0, 0, 0, 0.5);
+            transition: box-shadow 1s;
+            border-radius: 10px;
+        }
+
+        @media (hover: hover) {
+            .card-container:hover .card {
+                box-shadow: inset 20px 0 50px rgba(0, 0, 0, 0.5), 0 20px 100px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: #ffd700;
+            transform-origin: left;
+            transform: skewX(-45deg);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -5px;
+            width: 5px;
+            height: 100%;
+            background: #ffd700;
+            transform-origin: top;
+            transform: skewY(-45deg);
+        }
+
+        .imgBox {
             width: 100%;
             height: 100%;
             position: relative;
-            transform-style: preserve-3d;
-        }
-
-        .flap {
-            position: absolute;
-            width: 50%;
-            height: 100%;
+            transform-origin: left;
+            transition: transform 1s;
             background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            border: 8px solid #ffd700;
             border-radius: 10px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            transform-style: preserve-3d;
-            backface-visibility: hidden;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
         }
 
-        .flap::before {
+        .imgBox::before {
             content: '';
             position: absolute;
             inset: 0;
@@ -87,42 +217,13 @@
             pointer-events: none;
         }
 
-        .flap-left {
-            left: 0;
-            transform-origin: left center;
-            border: 8px solid #ffd700;
-            border-right: 4px solid #ffd700;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            z-index: 2;
-        }
-
-        .flap-right {
-            right: 0;
-            border: 8px solid #ffd700;
-            border-left: 4px solid #ffd700;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 40px;
-            z-index: 1;
-        }
-
-        .decorative-border {
-            position: absolute;
-            inset: 20px;
-            border: 3px solid rgba(255, 215, 0, 0.3);
-            border-radius: 5px;
-            pointer-events: none;
+        .card.opened .imgBox {
+            transform: rotateY(-135deg);
         }
 
         .headline {
             font-family: 'Cinzel', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-size: clamp(1.5rem, 5vw, 3rem);
             font-weight: 700;
             color: #ffd700;
             text-align: center;
@@ -140,28 +241,17 @@
         }
 
         .subtitle {
-            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            font-size: clamp(0.8rem, 2vw, 1.2rem);
             color: #ffe4b5;
             text-align: center;
             margin-top: 10px;
             font-style: italic;
         }
 
-        .moon-icon {
-            font-size: 60px;
-            margin: 20px 0;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
         .open-btn {
-            margin-top: 30px;
-            padding: 15px 40px;
-            font-size: 1.1rem;
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 1rem;
             font-weight: 700;
             color: #8b0000;
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
@@ -174,9 +264,15 @@
             letter-spacing: 1px;
         }
 
-        .open-btn:hover {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
+        @media (hover: hover) {
+            .open-btn:hover {
+                transform: scale(1.05) translateY(-2px);
+                box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        .open-btn:active {
+            transform: scale(0.98);
         }
 
         .open-btn:focus {
@@ -184,10 +280,61 @@
             outline-offset: 3px;
         }
 
+        .details {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px 20px;
+            z-index: -1;
+            background: linear-gradient(135deg, #8b0000 0%, #5a0000 100%);
+            border: 8px solid #ffd700;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .details::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.05) 20px);
+            pointer-events: none;
+        }
+
+        .greeting-text {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1rem, 3vw, 1.8rem);
+            color: #ffd700;
+            text-align: center;
+            line-height: 1.6;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-top: 10px;
+        }
+
+        .heart-icon {
+            font-size: 40px;
+            color: #ff69b4;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            margin-top: 10px;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
         .mirror-window {
             width: 100%;
-            max-width: 350px;
-            height: 300px;
+            max-width: 280px;
+            height: 220px;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             border: 6px solid #ffd700;
             border-radius: 15px;
@@ -199,12 +346,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-top: 15px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 400px) {
             .mirror-window {
-                max-width: 280px;
-                height: 250px;
+                max-width: 240px;
+                height: 180px;
             }
         }
 
@@ -231,8 +379,8 @@
         }
 
         .camera-btn {
-            padding: 12px 30px;
-            font-size: 1rem;
+            padding: 10px 24px;
+            font-size: 0.9rem;
             font-weight: 700;
             color: #fff;
             background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
@@ -243,11 +391,18 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-top: 15px;
         }
 
-        .camera-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.6);
+        @media (hover: hover) {
+            .camera-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 20px rgba(39, 174, 96, 0.6);
+            }
+        }
+
+        .camera-btn:active {
+            transform: scale(0.98);
         }
 
         .camera-btn.close {
@@ -255,30 +410,10 @@
             box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
         }
 
-        .camera-btn.close:hover {
-            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
-        }
-
-        .greeting-text {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(1rem, 2.5vw, 1.5rem);
-            color: #ffd700;
-            text-align: center;
-            line-height: 1.6;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .heart-icon {
-            font-size: 40px;
-            color: #ff69b4;
-            animation: heartbeat 1.5s ease-in-out infinite;
-            margin-top: 10px;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.1); }
-            50% { transform: scale(1); }
+        @media (hover: hover) {
+            .camera-btn.close:hover {
+                box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
+            }
         }
 
         .fallback-upload {
@@ -314,7 +449,7 @@
 
         .error-message {
             color: #ffe4b5;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-align: center;
             padding: 10px;
             display: none;
@@ -324,24 +459,11 @@
             display: block;
         }
 
-        .inner-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            width: 100%;
-        }
-
         .controls {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
-        }
-
-        .closed .flap-right {
-            pointer-events: none;
-            opacity: 0;
         }
 
         .https-warning {
@@ -351,79 +473,44 @@
             transform: translateX(-50%);
             background: rgba(255, 69, 0, 0.9);
             color: white;
-            padding: 15px 30px;
+            padding: 12px 24px;
             border-radius: 10px;
             z-index: 1000;
             display: none;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+            font-size: 0.9rem;
         }
 
         .https-warning.visible {
             display: block;
         }
 
-        .permission-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(26, 26, 46, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            animation: fadeIn 0.5s ease;
+        .decorative-border {
+            position: absolute;
+            inset: 15px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-radius: 5px;
+            pointer-events: none;
         }
 
-        .permission-overlay.hidden {
+        @media (max-width: 400px) {
+            .decorative-border {
+                inset: 10px;
+                border-width: 2px;
+            }
+        }
+
+        #imageCanvas {
             display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .permission-dialog {
-            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
-            border: 6px solid #ffd700;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            animation: slideUp 0.6s ease;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .permission-btn {
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #8b0000;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .permission-btn:hover {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
-        }
-
-        .permission-btn:focus {
-            outline: 3px solid #fff;
-            outline-offset: 3px;
+        #imageCanvas.active {
+            display: block;
         }
     </style>
 </head>
@@ -434,73 +521,68 @@
 
     <div class="permission-overlay" id="permissionOverlay">
         <div class="permission-dialog">
-            <div class="moon-icon" style="font-size: 80px;">🌙</div>
-            <h2 style="font-family: 'Cinzel', serif; color: #ffd700; margin: 20px 0; text-align: center;">Happy Karwa Chauth<br>my love</h2>
-            <p style="color: #ffe4b5; text-align: center; margin-bottom: 30px; line-height: 1.6;">
-                I tried to do something special<br>
-                for my wife today
+            <div class="moon-icon" style="font-size: 60px;">🌙</div>
+            <h2 style="font-family: 'Cinzel', serif; color: #ffd700; margin: 20px 0; text-align: center; font-size: clamp(1.2rem, 4vw, 1.8rem);">Welcome to<br>Karwa Chauth</h2>
+            <p style="color: #ffe4b5; text-align: center; margin-bottom: 25px; line-height: 1.6; font-size: clamp(0.85rem, 2vw, 1rem);">
+                This card has a special mirror for you.<br>
+                Please allow camera access to see your reflection.
             </p>
             <button class="permission-btn" id="permissionBtn">
-                Check it out
+                Allow Camera & Continue
             </button>
-            <p style="color: rgba(255, 228, 181, 0.7); font-size: 0.85rem; margin-top: 20px; text-align: center;">
-                I love you ❤️
+            <p style="color: rgba(255, 228, 181, 0.7); font-size: 0.75rem; margin-top: 20px; text-align: center;">
+                Your privacy is protected - camera is only used for the mirror effect
             </p>
         </div>
     </div>
 
-    <div class="container">
-        <div class="card-wrapper closed">
-            <div class="flap flap-left">
+    <div class="card-container">
+        <div class="card" id="card">
+            <div class="imgBox">
                 <div class="decorative-border"></div>
                 <div class="moon-icon">🌙</div>
                 <h1 class="headline">KARWA CHAUTH<br>KA ASLI CHAAND</h1>
                 <p class="subtitle">The Real Moon of Karwa Chauth</p>
                 <button class="open-btn" id="openBtn" aria-label="Open greeting card">
-                    Open Card
+                    <span class="desktop-text">Hover to Open</span>
+                    <span class="mobile-text">Tap to Open</span>
                 </button>
             </div>
-            <div class="flap flap-right">
+            <div class="details">
                 <div class="decorative-border"></div>
-                <div class="inner-content">
-                    <div class="greeting-text">
-                        Happy Karwa Chauth,<br>
-                        my moon and my stars.
-                        <div class="heart-icon">💖</div>
+                <div class="greeting-text">
+                    Happy Karwa Chauth,<br>
+                    my moon and my stars.
+                    <div class="heart-icon">💖</div>
+                </div>
+                
+                <div class="mirror-window">
+                    <video id="videoElement" autoplay playsinline muted></video>
+                    <div class="mirror-placeholder" id="placeholder">
+                        <p style="font-size: 2rem; margin-bottom: 10px;">✨</p>
+                        <p style="font-size: clamp(0.85rem, 2vw, 1rem);">Your reflection awaits</p>
                     </div>
-                    
-                    <div class="mirror-window">
-                        <video id="videoElement" autoplay playsinline muted></video>
-                        <div class="mirror-placeholder" id="placeholder">
-                            <p style="font-size: 2rem; margin-bottom: 10px;">✨</p>
-                            <p>Your reflection awaits</p>
-                        </div>
-                        <div class="fallback-upload" id="fallbackUpload">
-                            <p>📸 Camera unavailable</p>
-                            <label class="upload-btn">
-                                Choose Photo
-                                <input type="file" id="fileInput" accept="image/*">
-                            </label>
-                        </div>
-                        <canvas id="imageCanvas" style="display:none; width:100%; height:100%; object-fit:cover;"></canvas>
-                        <div class="error-message" id="errorMessage"></div>
+                    <div class="fallback-upload" id="fallbackUpload">
+                        <p style="font-size: 0.9rem;">📸 Camera unavailable</p>
+                        <label class="upload-btn">
+                            Choose Photo
+                            <input type="file" id="fileInput" accept="image/*">
+                        </label>
                     </div>
+                    <canvas id="imageCanvas"></canvas>
+                    <div class="error-message" id="errorMessage"></div>
+                </div>
 
-                    <div class="controls">
-                        <button class="camera-btn" id="cameraBtn" aria-label="Close camera" aria-pressed="true" style="display:none;">
-                            Close Camera
-                        </button>
-                    </div>
+                <div class="controls">
+                    <button class="camera-btn" id="cameraBtn" aria-label="Close camera" aria-pressed="true" style="display:none;">
+                        Close Camera
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
-        const cardWrapper = document.querySelector('.card-wrapper');
-        const flapLeft = document.querySelector('.flap-left');
-        const openBtn = document.getElementById('openBtn');
         const cameraBtn = document.getElementById('cameraBtn');
         const videoElement = document.getElementById('videoElement');
         const placeholder = document.getElementById('placeholder');
@@ -511,18 +593,32 @@
         const httpsWarning = document.getElementById('httpsWarning');
         const permissionOverlay = document.getElementById('permissionOverlay');
         const permissionBtn = document.getElementById('permissionBtn');
+        const card = document.getElementById('card');
+        const openBtn = document.getElementById('openBtn');
 
         let stream = null;
-        let isCardOpen = false;
         let isCameraActive = false;
         let cameraReady = false;
+        let isCardOpen = false;
 
         // Check HTTPS
-        if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
             httpsWarning.classList.add('visible');
         }
 
-        // Request camera permission on page load
+        // Detect mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+        // Show appropriate button text
+        if (isMobile) {
+            document.querySelector('.desktop-text').style.display = 'none';
+            document.querySelector('.mobile-text').style.display = 'inline';
+        } else {
+            document.querySelector('.desktop-text').style.display = 'inline';
+            document.querySelector('.mobile-text').style.display = 'none';
+        }
+
+        // Request camera permission
         permissionBtn.addEventListener('click', async () => {
             await requestCameraPermission();
         });
@@ -534,30 +630,28 @@
                         facingMode: 'user',
                         width: { ideal: 1280 },
                         height: { ideal: 720 }
-                    }
+                    },
+                    audio: false
                 };
 
                 stream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = stream;
-                videoElement.playsInline = true;
                 
                 await videoElement.play();
                 
                 cameraReady = true;
                 isCameraActive = true;
                 
-                // Hide permission overlay and show card
-                gsap.to(permissionOverlay, {
-                    opacity: 0,
-                    duration: 0.5,
-                    onComplete: () => {
-                        permissionOverlay.classList.add('hidden');
-                    }
-                });
+                // Hide permission overlay
+                permissionOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    permissionOverlay.classList.add('hidden');
+                }, 500);
 
                 // Prepare video for when card opens
                 videoElement.classList.add('active');
                 placeholder.classList.add('hidden');
+                cameraBtn.style.display = 'inline-block';
 
             } catch (error) {
                 console.error('Camera permission error:', error);
@@ -565,55 +659,25 @@
                 
                 // Still allow user to continue without camera
                 setTimeout(() => {
-                    gsap.to(permissionOverlay, {
-                        opacity: 0,
-                        duration: 0.5,
-                        onComplete: () => {
-                            permissionOverlay.classList.add('hidden');
-                        }
-                    });
+                    permissionOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        permissionOverlay.classList.add('hidden');
+                    }, 500);
                 }, 2000);
             }
         }
 
-        // Open card animation
-        openBtn.addEventListener('click', openCard);
-        openBtn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openCard();
+        // Handle card opening on mobile (tap)
+        openBtn.addEventListener('click', () => {
+            if (isMobile) {
+                isCardOpen = !isCardOpen;
+                if (isCardOpen) {
+                    card.classList.add('opened');
+                } else {
+                    card.classList.remove('opened');
+                }
             }
         });
-
-        function openCard() {
-            if (isCardOpen) return;
-            isCardOpen = true;
-            cardWrapper.classList.remove('closed');
-
-            // Show close camera button if camera is active
-            if (cameraReady) {
-                cameraBtn.style.display = 'inline-block';
-            }
-
-            gsap.to(flapLeft, {
-                rotationY: -150,
-                duration: 1.8,
-                ease: "power2.inOut",
-                transformOrigin: "left center",
-                onUpdate: function() {
-                    const progress = this.progress();
-                    const shadowIntensity = Math.sin(progress * Math.PI) * 30;
-                    flapLeft.style.boxShadow = `-${shadowIntensity}px 0 ${shadowIntensity * 2}px rgba(0, 0, 0, ${0.3 + progress * 0.4})`;
-                }
-            });
-
-            gsap.to(openBtn, {
-                opacity: 0,
-                scale: 0.8,
-                duration: 0.5,
-                ease: "power2.in"
-            });
-        }
 
         // Camera toggle functionality
         cameraBtn.addEventListener('click', toggleCamera);
@@ -636,19 +700,19 @@
                         facingMode: 'user',
                         width: { ideal: 1280 },
                         height: { ideal: 720 }
-                    }
+                    },
+                    audio: false
                 };
 
                 stream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = stream;
-                videoElement.playsInline = true;
                 
                 await videoElement.play();
                 
                 videoElement.classList.add('active');
                 placeholder.classList.add('hidden');
                 fallbackUpload.classList.remove('visible');
-                imageCanvas.style.display = 'none';
+                imageCanvas.classList.remove('active');
                 
                 cameraBtn.textContent = 'Close Camera';
                 cameraBtn.classList.add('close');
@@ -715,7 +779,7 @@
                         ctx.drawImage(img, 0, 0);
                         ctx.setTransform(1, 0, 0, 1, 0, 0);
                         
-                        imageCanvas.style.display = 'block';
+                        imageCanvas.classList.add('active');
                         fallbackUpload.classList.remove('visible');
                         errorMessage.classList.remove('visible');
                     };
@@ -738,7 +802,7 @@
             }
         });
 
-        // Keyboard accessibility for camera button
+        // Keyboard accessibility
         cameraBtn.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
